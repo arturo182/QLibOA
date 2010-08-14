@@ -16,21 +16,21 @@ namespace OAvis
   class Token
   {
     public:
-      Token(QString key, QString secret);
+      Token(QByteArray key, QByteArray secret);
 
-      static Token *fromString(QString text);
+      static Token *fromString(QByteArray text);
 
-      void setKey(QString key) { m_key = key; }
-      QString getKey() { return m_key; }
+      void setKey(QByteArray key) { m_key = key; }
+      QByteArray getKey() { return m_key; }
 
-      void setSecret(QString secret) { m_secret = secret; }
-      QString getSecret() { return m_secret; }
+      void setSecret(QByteArray secret) { m_secret = secret; }
+      QByteArray getSecret() { return m_secret; }
 
       void debug() { qDebug() << "OAvis::Token[\n  key=" << m_key << "\n  secret=" << m_secret << "\n]"; }
 
     private:
-      QString m_key;
-      QString m_secret;
+      QByteArray m_key;
+      QByteArray m_secret;
   };
 }
 

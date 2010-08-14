@@ -14,21 +14,21 @@
 
 using namespace OAvis;
 
-QString Util::encode(QString text)
+QByteArray Util::encode(QByteArray text)
 {
   return QUrl::toPercentEncoding(text);
 }
 
-QString Util::decode(QString text)
+QByteArray Util::decode(QByteArray text)
 {
-  return QUrl::fromPercentEncoding(text.toUtf8());
+  return QUrl::fromPercentEncoding(text).toAscii();
 }
 
-QString Util::genKey(Consumer *consumer, Token *token)
+QByteArray Util::genKey(Consumer *consumer, Token *token)
 {
   if(consumer && token) {
-    QString consumerSecret = consumer->getSecret();
-    QString tokenSecret = (token)?token->getSecret():"";
+    QByteArray consumerSecret = consumer->getSecret();
+    QByteArray tokenSecret = (token)?token->getSecret():"";
 
     consumerSecret = Util::encode(consumerSecret);
     tokenSecret = Util::encode(tokenSecret);
@@ -39,15 +39,15 @@ QString Util::genKey(Consumer *consumer, Token *token)
   }
 }
 
-OAvis::ParamMap Util::urlToParams(QString url)
+OAvis::ParamMap Util::urlToParams(QByteArray url)
 {
   OAvis::ParamMap params;
 
   QUrl qurl(url);
   QList<QPair<QString, QString> > query = qurl.queryItems();
   for(int i = 0; i < query.size(); i++) {
-    QString key = Util::decode(query.at(i).first.toAscii());
-    QString value = Util::decode(query.at(i).second.toAscii());
+    QByteArray key = Util::decode(query.at(i).first.toAscii());
+    QByteArray value = Util::decode(query.at(i).second.toAscii());
 
     params.insert(key, value);
   }
@@ -66,7 +66,7 @@ OAvis::ParamMap Util::mergeParams(OAvis::ParamMap first, OAvis::ParamMap second)
   return first;
 }
 
-QString Util::buildHTTPQuery(OAvis::ParamMap params)
+QByteArray Util::buildHTTPQuery(OAvis::ParamMap params)
 {
   if(params.size() == 0) {
     return NULL;
@@ -74,8 +74,8 @@ QString Util::buildHTTPQuery(OAvis::ParamMap params)
 
   OAvis::ParamMap::iterator i = params.begin();
   while(i != params.end()) {
-    QString key = Util::encode(i.key());
-    QString value = Util::encode(i.value());
+    QByteArray key = Util::encode(i.key());
+    QByteArray value = Util::encode(i.value());
 
     params.remove(i.key());
     params.insert(key, value);
@@ -84,10 +84,10 @@ QString Util::buildHTTPQuery(OAvis::ParamMap params)
   }
 
   //TODO: sortowanie kluczy
-  QList<QString> keys = params.keys();
+  QList<QByteArray> keys = params.keys();
   //qDebug() << keys;
 
-  QString out;
+  QByteArray out;
   i = params.begin();
   while(i != params.end()) {
     out.append(i.key());

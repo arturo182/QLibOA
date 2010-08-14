@@ -10,7 +10,7 @@
 
 using namespace OAvis;
 
-Consumer::Consumer(QString key, QString secret, QString callback)
+Consumer::Consumer(QByteArray key, QByteArray secret, QByteArray callback)
 {
   m_key = key;
   m_secret = secret;

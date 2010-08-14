@@ -17,7 +17,7 @@
 
 using namespace OAvis;
 
-Request::Request(OAvis::HttpMethod method, QString url, OAvis::ParamMap params)
+Request::Request(OAvis::HttpMethod method, QByteArray url, OAvis::ParamMap params)
 {
   if(!url.isNull()) {
     params = Util::mergeParams(params, Util::urlToParams(url));
@@ -28,7 +28,7 @@ Request::Request(OAvis::HttpMethod method, QString url, OAvis::ParamMap params)
   m_params = params;
 }
 
-void Request::setParam(QString key, QString value, bool duplicates)
+void Request::setParam(QByteArray key, QByteArray value, bool duplicates)
 {
   if(!duplicates) {
     m_params.remove(key);
@@ -37,12 +37,12 @@ void Request::setParam(QString key, QString value, bool duplicates)
   m_params.insert(key, value);
 }
 
-Request *Request::fromRequest(OAvis::HttpMethod method, QString url, OAvis::ParamMap params)
+Request *Request::fromRequest(OAvis::HttpMethod method, QByteArray url, OAvis::ParamMap params)
 {
   return new Request(method, url, params);
 }
 
-Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, OAvis::HttpMethod method, QString url, OAvis::ParamMap params)
+Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, OAvis::HttpMethod method, QByteArray url, OAvis::ParamMap params)
 {
   OAvis::ParamMap defaults;
 
@@ -59,7 +59,7 @@ Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, OAvis::
   return new Request(method, url, params);
 }
 
-QString Request::getSignableParams()
+QByteArray Request::getSignableParams()
 {
   OAvis::ParamMap params = m_params;
 
@@ -68,11 +68,11 @@ QString Request::getSignableParams()
   return Util::buildHTTPQuery(params);
 }
 
-QString Request::getBaseString()
+QByteArray Request::getBaseString()
 {
-  QString method = getNormalizedHTTPMethod();
-  QString url = getNormalizedUrl();
-  QString params = getSignableParams();
+  QByteArray method = getNormalizedHTTPMethod();
+  QByteArray url = getNormalizedUrl();
+  QByteArray params = getSignableParams();
 
   method = Util::encode(method);
   url = Util::encode(url);
@@ -81,7 +81,7 @@ QString Request::getBaseString()
   return method + "&" + url + "&" + params;
 }
 
-QString Request::getNormalizedHTTPMethod()
+QByteArray Request::getNormalizedHTTPMethod()
 {
   switch(m_method) {
     case OAvis::GET:
@@ -96,7 +96,7 @@ QString Request::getNormalizedHTTPMethod()
   return "";
 }
 
-QString Request::getNormalizedUrl()
+QByteArray Request::getNormalizedUrl()
 {
   QUrl url(m_url);
 
@@ -107,21 +107,21 @@ QString Request::getNormalizedUrl()
   return url.toString(QUrl::RemoveQuery | QUrl::StripTrailingSlash).toAscii();
 }
 
-QString Request::genTimestamp()
+QByteArray Request::genTimestamp()
 {
-  return QString::number(QDateTime::currentDateTime().toTime_t());
+  return QByteArray::number(QDateTime::currentDateTime().toTime_t());
 }
 
-QString Request::genNonce()
+QByteArray Request::genNonce()
 {
   qsrand(QDateTime::currentDateTime().toTime_t());
   return QCryptographicHash::hash(QByteArray::number(qrand()), QCryptographicHash::Md5).toHex();
 }
 
-QString Request::toUrl()
+QByteArray Request::toUrl()
 {
-  QString postData = toPostdata();
-  QString out = getNormalizedUrl();
+  QByteArray postData = toPostdata();
+  QByteArray out = getNormalizedUrl();
 
   if(!postData.isEmpty()) {
     out.append("?" + postData);
@@ -130,15 +130,15 @@ QString Request::toUrl()
   return out;
 }
 
-QString Request::toPostdata()
+QByteArray Request::toPostdata()
 {
   return Util::buildHTTPQuery(m_params);
 }
 
-QString Request::toHeader(QString realm)
+QByteArray Request::toHeader(QByteArray realm)
 {
 	bool first = true;
-	QString out;
+	QByteArray out;
 
 	if(!realm.isNull()) {
 		out = "Authorization: OAuth realm=\"" + Util::encode(realm) + "\"";

@@ -19,8 +19,8 @@ namespace OAvis
     public:
       SignaturePlainText() { }
 
-      QString getName() { return "PLAINTEXT"; }
-      QString build(Request *request, Consumer *consumer, Token *token = NULL) { Q_UNUSED(request); return Util::genKey(consumer, token); }
+      QByteArray getName() { return "PLAINTEXT"; }
+      QByteArray build(Request *request, Consumer *consumer, Token *token = NULL) { Q_UNUSED(request); return Util::genKey(consumer, token); }
   };
 }
 
