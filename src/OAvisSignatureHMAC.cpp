@@ -9,12 +9,11 @@
 #include "OAvisSignatureHMAC.h"
 #include "OAvisUtil.h"
 
-#include <QtCore/QDebug>
 #include <QtCore/QCryptographicHash>
 
 using namespace OAvis;
 
-QByteArray SignatureHMAC::hmacSha1(QByteArray data, QByteArray key)
+QString SignatureHMAC::hmacSha1(QByteArray data, QByteArray key)
 {
   int size = 64;
 
@@ -36,11 +35,10 @@ QByteArray SignatureHMAC::hmacSha1(QByteArray data, QByteArray key)
   return QCryptographicHash::hash(opad + data, QCryptographicHash::Sha1).toBase64();
 }
 
-QByteArray SignatureHMAC::build(Request *request, Consumer *consumer, Token *token)
+QString SignatureHMAC::build(Request *request, Consumer *consumer, Token *token)
 {
-  QByteArray base = request->getBaseString();
-  QByteArray key = Util::genKey(consumer, token);
+  QString base = request->getBaseString();
+  QString key = Util::genKey(consumer, token);
 
-  qDebug() << "base" << "key";
-  return hmacSha1(base, key);
+  return hmacSha1(base.toUtf8(), key.toUtf8());
 }

@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     OAvis::ParamMap params;
-    QList<QByteArray> params2;
+    QList<QString> params2;
     OAvis::Request *req;
     OAvis::SignatureHMAC hmac;
     OAvis::SignaturePlainText plain;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     //testing setParam function
     req = new OAvis::Request();
-    Q_ASSERT(QByteArray() == req->getParam("foo"));
+    Q_ASSERT(QString::null == req->getParam("foo"));
 
     req->setParam("foo", "bar");
     Q_ASSERT("bar" == req->getParam("foo"));
@@ -72,13 +72,13 @@ int main(int argc, char *argv[])
 
     //testing unsetParam function
     req = new OAvis::Request();
-    Q_ASSERT(QByteArray() == req->getParam("foo"));
+    Q_ASSERT(QString::null == req->getParam("foo"));
 
     req->setParam("foo", "bar");
     Q_ASSERT("bar" == req->getParam("foo"));
 
     req->unsetParam("foo");
-    Q_ASSERT(QByteArray() == req->getParam("foo"));
+    Q_ASSERT(QString::null == req->getParam("foo"));
 
     //testing fromConsumerAndToken function
     req = OAvis::Request::fromConsumerAndToken(&consumer, &token, OAvis::POST, "http://example.com");
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
     params.insert("oauth_nonce", "foo");
     req = OAvis::Request::fromConsumerAndToken(&consumer, NULL, OAvis::POST, "http://example.com", params);
-    Q_ASSERT(QByteArray() == req->getParam("oauth_token"));
+    Q_ASSERT(QString::null == req->getParam("oauth_token"));
     params.clear();
 
     req = OAvis::Request::fromConsumerAndToken(&consumer, NULL, OAvis::POST, "http://example.com/?foo=bar");
@@ -237,18 +237,6 @@ int main(int argc, char *argv[])
     Q_ASSERT("PLAINTEXT" == req->getParam("oauth_signature_method"));
     Q_ASSERT("kd94hf93k423kf44&pfkkdhi9sl3r4s00" == req->getParam("oauth_signature"));
     Q_ASSERT("file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature=kd94hf93k423kf44%26pfkkdhi9sl3r4s00&oauth_signature_method=PLAINTEXT&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original" == req->toPostdata());
-
-
-    QFile f("out.txt");
-    f.open(QIODevice::Append);
-
-    OAvis::Request *ree = OAvis::Request::fromConsumerAndToken(new OAvis::Consumer("vP69u6PGSakKTIoE2ApvVw", "g2PjaAttF0prUfmMTSlzVe9Dr7LBqCGcJXlWwhlwA"), NULL, OAvis::GET, "http://api.twitter.com/oauth/request_token");
-    ree->sign(OAvis::HMAC_SHA1, new OAvis::Consumer("vP69u6PGSakKTIoE2ApvVw", "g2PjaAttF0prUfmMTSlzVe9Dr7LBqCGcJXlWwhlwA"));
-
-    f.write(ree->getBaseString()+'\n'+'\n');
-    f.write(ree->toUrl());
-
-    f.close();
 
     return a.exec();
 }

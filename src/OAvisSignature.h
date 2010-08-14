@@ -21,9 +21,9 @@ namespace OAvis
     public:
       Signature() { }
 
-      virtual QByteArray getName() = 0;
-      virtual QByteArray build(Request *request, Consumer *consumer, Token *token = 0) = 0;
-      bool check(Request *request, Consumer *consumer, Token *token, QByteArray sig) { return (build(request, consumer, token) == sig); }
+      virtual QString getName() = 0;
+      virtual QString build(Request *request, Consumer *consumer, Token *token = 0) = 0;
+      bool check(Request *request, Consumer *consumer, Token *token, QString sig) { return (build(request, consumer, token) == sig); }
   };
 }
 

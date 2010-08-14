@@ -14,7 +14,7 @@
 
 namespace OAvis
 {
-  typedef QMultiMap<QByteArray, QByteArray> ParamMap;
+  typedef QMultiMap<QString, QString> ParamMap;
 
   enum HttpMethod
   {

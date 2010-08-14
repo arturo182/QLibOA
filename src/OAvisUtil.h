@@ -20,12 +20,12 @@ namespace OAvis
     public:
       Util() { }
 
-      static QByteArray encode(QByteArray text);
-      static QByteArray decode(QByteArray text);
-      static QByteArray genKey(Consumer *consumer = 0, Token *token = 0);
-      static OAvis::ParamMap urlToParams(QByteArray url);
+      static QString encode(QString text);
+      static QString decode(QString text);
+      static QString genKey(Consumer *consumer = 0, Token *token = 0);
+      static OAvis::ParamMap urlToParams(QString url);
       static OAvis::ParamMap mergeParams(OAvis::ParamMap first, OAvis::ParamMap second);
-      static QByteArray buildHTTPQuery(OAvis::ParamMap params);
+      static QString buildHTTPQuery(OAvis::ParamMap params);
   };
 }
 

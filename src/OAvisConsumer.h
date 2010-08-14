@@ -16,23 +16,23 @@ namespace OAvis
   class Consumer
   {
     public:
-      Consumer(QByteArray key, QByteArray secret, QByteArray callback = QByteArray());
+      Consumer(QString key, QString secret, QString callback = QString::null);
 
-      void setKey(QByteArray key) { m_key = key; }
-      QByteArray getKey() { return m_key; }
+      void setKey(QString key) { m_key = key; }
+      QString getKey() { return m_key; }
 
-      void setSecret(QByteArray secret) { m_secret = secret; }
-      QByteArray getSecret() { return m_secret; }
+      void setSecret(QString secret) { m_secret = secret; }
+      QString getSecret() { return m_secret; }
 
-      void setCallback(QByteArray callback) { m_callback = callback; }
-      QByteArray getCallback() { return m_callback; }
+      void setCallback(QString callback) { m_callback = callback; }
+      QString getCallback() { return m_callback; }
 
       void debug() { qDebug() << "OAvis::Consumer[\n  key =" << m_key << "\n  secret =" << m_secret << "\n  callback =" << m_callback << "\n]"; }
 
     private:
-      QByteArray m_key;
-      QByteArray m_secret;
-      QByteArray m_callback;
+      QString m_key;
+      QString m_secret;
+      QString m_callback;
   };
 }
 

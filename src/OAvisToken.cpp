@@ -12,18 +12,18 @@
 
 using namespace OAvis;
 
-Token::Token(QByteArray key, QByteArray secret)
+Token::Token(QString key, QString secret)
 {
   m_key = key;
   m_secret = secret;
 }
 
-Token *Token::fromString(QByteArray text)
+Token *Token::fromString(QString text)
 {
   QUrl url("http://example.com/?"+text);
 
-  QByteArray key;
-  QByteArray secret;
+  QString key;
+  QString secret;
 
   QList<QPair<QString, QString> > query = url.queryItems();
   for(int i = 0; i < query.count(); i++) {
