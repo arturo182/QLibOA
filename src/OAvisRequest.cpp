@@ -141,10 +141,10 @@ QString Request::toHeader(QString realm)
 	QString out;
 
 	if(!realm.isNull()) {
-		out = "Authorization: OAuth realm=\"" + Util::encode(realm) + "\"";
+		out = "OAuth realm=\"" + Util::encode(realm) + "\"";
 		first = false;
 	} else {
-		out = "Authorization: OAuth";
+		out = "OAuth";
 	}
 
   OAvis::ParamMap::iterator i = m_params.begin();
@@ -158,7 +158,7 @@ QString Request::toHeader(QString realm)
       return 0;
     }
 
-    out.append((first)?' ':',');
+    out.append((first)?" ":", ");
     out.append(Util::encode(i.key()) + "=\"" + Util::encode(i.value()) + "\"");
 
     first = false;
