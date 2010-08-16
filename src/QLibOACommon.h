@@ -30,7 +30,7 @@ namespace QLibOA
 
   inline QDebug operator<<(QDebug debug, const QLibOA::HttpMethod method)
   {
-    debug.nospace() << "TweetAuth::HttpMethod(";
+    debug.nospace() << "QLibOA::HttpMethod(";
     switch(method) {
       case QLibOA::GET:
         debug << "GET";
@@ -48,7 +48,7 @@ namespace QLibOA
 
   inline QDebug operator<<(QDebug debug, const QLibOA::ParamMap params)
   {
-    debug.nospace() << "TweetAuth::ParamMap(\n";
+    debug.nospace() << "QLibOA::ParamMap(\n";
 
     QLibOA::ParamMap::const_iterator i = params.begin();
     while(i != params.end()) {
