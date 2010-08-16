@@ -1,23 +1,23 @@
-TARGET = OAvis
+TARGET = QLibOA
 TEMPLATE = lib
 DESTDIR = ../lib
 
 HEADERS += \
-    OAvisUtil.h \
-    OAvisToken.h \
-    OAvisSignatureHMAC.h \
-    OAvisSignature.h \
-    OAvisRequest.h \
-    OAvisConsumer.h \
-    OAvisSignaturePlainText.h \
-    OAvisCommon.h
+    QLibOAUtil.h \
+    QLibOAToken.h \
+    QLibOASignatureHMAC.h \
+    QLibOASignature.h \
+    QLibOARequest.h \
+    QLibOAConsumer.h \
+    QLibOASignaturePlainText.h \
+    QLibOACommon.h
 
 SOURCES += \
-    OAvisUtil.cpp \
-    OAvisToken.cpp \
-    OAvisSignatureHMAC.cpp \
-    OAvisRequest.cpp \
-    OAvisConsumer.cpp
+    QLibOAUtil.cpp \
+    QLibOAToken.cpp \
+    QLibOASignatureHMAC.cpp \
+    QLibOARequest.cpp \
+    QLibOAConsumer.cpp
 
 CONFIG(debug_and_release) {
     build_pass:CONFIG(debug, debug|release) {

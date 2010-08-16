@@ -4,15 +4,15 @@ QT       -= gui
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TARGET = TweetAuth_Tests
+TARGET = QLibOA_Tests
 TEMPLATE = app
 INCLUDEPATH = ../src
 DEPENDPATH = ../lib
 
 CONFIG(debug, release|debug) {
-  LIBS += -L../lib -lOAvisd
+  LIBS += -L../lib -lQLibOAd
 } else {
-  LIBS += -L../lib -lOAvis
+  LIBS += -L../lib -lQLibOA
 }
 
 SOURCES += main.cpp

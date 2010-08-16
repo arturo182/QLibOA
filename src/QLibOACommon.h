@@ -1,18 +1,18 @@
 /**
-  * OAvis
+  * QLibOA
   * Copyright (c) 2010 arturo182 <arturo182@tlen.pl>
   * All rights reserved
   *
   * $Id$
   */
 
-#ifndef OAVIS_H
-#define OAVIS_H
+#ifndef QLIBOA_H
+#define QLIBOA_H
 
 #include <QtCore/QDebug>
 #include <QtCore/QMultiMap>
 
-namespace OAvis
+namespace QLibOA
 {
   typedef QMultiMap<QString, QString> ParamMap;
 
@@ -28,15 +28,15 @@ namespace OAvis
     PLAINTEXT = 1
   };
 
-  inline QDebug operator<<(QDebug debug, const OAvis::HttpMethod method)
+  inline QDebug operator<<(QDebug debug, const QLibOA::HttpMethod method)
   {
     debug.nospace() << "TweetAuth::HttpMethod(";
     switch(method) {
-      case OAvis::GET:
+      case QLibOA::GET:
         debug << "GET";
       break;
 
-      case OAvis::POST:
+      case QLibOA::POST:
         debug << "POST";
       break;
     }
@@ -46,11 +46,11 @@ namespace OAvis
     return debug.space();
   }
 
-  inline QDebug operator<<(QDebug debug, const OAvis::ParamMap params)
+  inline QDebug operator<<(QDebug debug, const QLibOA::ParamMap params)
   {
     debug.nospace() << "TweetAuth::ParamMap(\n";
 
-    OAvis::ParamMap::const_iterator i = params.begin();
+    QLibOA::ParamMap::const_iterator i = params.begin();
     while(i != params.end()) {
       debug << "    " << i.key() << " = " << i.value();
       i++;
@@ -66,4 +66,4 @@ namespace OAvis
 
 }
 
-#endif // OAVIS_H
+#endif // QLIBOA_H
