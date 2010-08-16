@@ -120,14 +120,19 @@ QString Request::genNonce()
 
 QString Request::toUrl()
 {
-  QString postData = toPostdata();
   QString out = getNormalizedUrl();
+  QString getData = toGetdata();
 
-  if(!postData.isEmpty()) {
-    out.append("?" + postData);
+  if(!getData.isEmpty()) {
+    out.append("?" + getData);
   }
 
   return out;
+}
+
+QString Request::toGetdata()
+{
+  return Util::buildHTTPQuery(m_params, true);
 }
 
 QString Request::toPostdata()

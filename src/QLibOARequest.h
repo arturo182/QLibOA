@@ -37,6 +37,7 @@ namespace QLibOA
       static QString genNonce();
 
       QString toUrl();
+      QString toGetdata();
       QString toPostdata();
       QString toHeader(QString realm = QString::null);
 

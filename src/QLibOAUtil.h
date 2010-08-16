@@ -25,7 +25,7 @@ namespace QLibOA
       static QString genKey(Consumer *consumer = 0, Token *token = 0);
       static QLibOA::ParamMap urlToParams(QString url);
       static QLibOA::ParamMap mergeParams(QLibOA::ParamMap first, QLibOA::ParamMap second);
-      static QString buildHTTPQuery(QLibOA::ParamMap params);
+      static QString buildHTTPQuery(QLibOA::ParamMap params, bool skipOAuth = false);
   };
 }
 

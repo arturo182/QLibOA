@@ -68,7 +68,7 @@ QLibOA::ParamMap Util::mergeParams(QLibOA::ParamMap first, QLibOA::ParamMap seco
   return first;
 }
 
-QString Util::buildHTTPQuery(QLibOA::ParamMap params)
+QString Util::buildHTTPQuery(QLibOA::ParamMap params, bool skipOAuth)
 {
   if(params.size() == 0) {
     return NULL;
@@ -92,15 +92,18 @@ QString Util::buildHTTPQuery(QLibOA::ParamMap params)
   QString out;
   i = params.begin();
   while(i != params.end()) {
-    out.append(i.key());
-    out.append("=");
-    out.append(i.value());
-
-    i++;
-
-    if(i != params.end()) {
+    if(!(skipOAuth && i.key().contains("oauth_"))) {
+      out.append(i.key());
+      out.append("=");
+      out.append(i.value());
       out.append("&");
     }
+
+    i++;
+  }
+
+  if(out.endsWith("&")) {
+    out.chop(1);
   }
 
   return out;
