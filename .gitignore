@@ -1,0 +1,9 @@
+/Makefile
+/QLibOA.pro.user
+/lib/*
+/src/Makefile*
+/src/release/*
+/src/debug/*
+/tests/Makefile*
+/tests/release/*
+/tests/debug/*
