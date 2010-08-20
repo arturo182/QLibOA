@@ -2,8 +2,6 @@
   * QLibOA
   * Copyright (c) 2010 arturo182 <arturo182@tlen.pl>
   * All rights reserved
-  *
-  * $Id$
   */
 
 #ifndef QLIBOASIGNATURE_H
