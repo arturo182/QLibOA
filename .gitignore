@@ -1,5 +1,6 @@
 /Makefile
 /QLibOA.pro.user
+/docs/*
 /lib/*
 /src/Makefile*
 /src/release/*

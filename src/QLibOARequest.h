@@ -1,8 +1,19 @@
-/**
-  * QLibOA
-  * Copyright (c) 2010 arturo182 <arturo182@tlen.pl>
-  * All rights reserved
-  */
+/************************************************************************
+ * QLibOA                                                               *
+ * Copyright (C) 2010 arturo182 <arturo182@tlen.pl>                     *
+ *                                                                      *
+ * This library is free software: you can redistribute it and/or modify *
+ * it under the terms of the GNU General Public License as published by *
+ * the Free Software Foundation; version 3 only.                        *
+ *                                                                      *
+ * This library is distributed in the hope that it will be useful,      *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of       *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the         *
+ * GNU General Public License for more details.                         *
+ *                                                                      *
+ * You should have received a copy of the GNU General Public License    *
+ * along with this library. If not, see <http://www.gnu.org/licenses/>. *
+ ************************************************************************/
 
 #ifndef QLIBOAREQUEST_H
 #define QLIBOAREQUEST_H
@@ -14,17 +25,77 @@
 
 namespace QLibOA
 {
+  /*! \brief The request class.
+   *
+   *  This class represents the OAuth request.
+   *
+   *  There are two ways to create a request:
+   *
+   *  1. Simply create it trough constructor or Request::fromRequest function:
+   *  \code
+   *  QLibOA::ParamMap params;
+   *  params.insert("consumer_key", "foo-bar");
+   *
+   *  Request *req = Request::fromRequest(QLibOA::GET, "http://example.com/access_token", params);
+   *  \endcode
+   *  2. Create Reply with Consumer and Token information:
+   *  \code
+   *  QLibOA::Consumer con("foo-bar", "bar-foo");
+   *  QLibOA::Token tok("bar-foo", "foo-bar");
+   *
+   *  QLibOA::ParamMap params;
+   *  params.insert("consumer_key", "foo-bar");
+   *
+   *  Request *req = Request::fromConsumerAndToken(&con, &tok, QLibOA::POST, "http://example.com/access_token", params);
+   *  \endcode
+   *  The difference is not only that when you execute fromConsumerAndToken, the consumer and token info is added
+   *  to the request, but also default parameters like nonce and timestamp are added.
+   *
+   *  After you create a request, you may want to sign it, signing is done like this:
+   *  \code
+   *  QLibOA::Consumer con("foo-bar", "bar-foo");
+   *  QLibOA::Token tok("bar-foo", "foo-bar");
+   *
+   *  Request *req = Request::fromConsumerAndToken(&con, &tok, QLibOA::POST, "http://example.com/access_token");
+   *
+   *  req->sign(QLibOA::HMAC_SHA1, &con, &tok);
+   *  \endcode
+   *
+   *  After creating and signing a request, there are multiple ways to get a representation of it:<br>
+   *  You can get it as a URL for GET requests using Request::toUrl.<br>
+   *  If you want to use header-based authorization, you can use Request::toHeader to get
+   *  "Authorization" header value and Request::getNormalizedUrl to get the URL.<br>
+   *  There are also two functionsto get only the parameters, the Request::toGetdata function
+   *  returns only the non-oauth parameters and Request::toPostdata returns all parameters.
+   *
+   *  All these functions return values that are encoded and ready to send.
+   */
   class Request
   {
     public:
       Request(QLibOA::HttpMethod method = QLibOA::GET, QString url = QString::null, QLibOA::ParamMap params = QLibOA::ParamMap());
 
       void setParam(QString key, QString value, bool duplicates = true);
+
+      /*! \brief
+       *  \return
+       */
       QString getParam(QString key) { return m_params.value(key); }
+
+      /*! \brief Returns parameter keys
+       *  \return A list of sorted parameter keys
+       */
       QList<QString> getParamAll(QString key) { QList<QString> params = m_params.values(key); qSort(params); return params; }
+
+      /*! \brief Removes all parameters with \a key key
+       */
       void unsetParam(QString key) { m_params.remove(key); }
 
+      /*! \brief Returns all parameters
+       *  \return A map of request's parameters
+       */
       QLibOA::ParamMap getParams() { return m_params; }
+
       QString getSignableParams();
 
       QString getBaseString();
@@ -47,9 +118,9 @@ namespace QLibOA
       void debug();
 
     private:
-      QLibOA::ParamMap m_params;
-      QLibOA::HttpMethod m_method;
-      QString m_url;
+      QLibOA::ParamMap m_params; /*!< Request's parameters */
+      QLibOA::HttpMethod m_method; /*!< Request HTTP method */
+      QString m_url;  /*!< Request URL */
   };
 }
 
