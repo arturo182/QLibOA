@@ -173,7 +173,7 @@ QString Request::genTimestamp()
  */
 QString Request::genNonce()
 {
-  qsrand(QDateTime::currentDateTime().toTime_t());
+  qsrand(QDateTime::currentDateTime().toMSecsSinceEpoch());
   return QCryptographicHash::hash(QByteArray::number(qrand()), QCryptographicHash::Md5).toHex();
 }
 
