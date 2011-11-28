@@ -23,6 +23,8 @@
 #include "QLibOASignature.h"
 #include "QLibOACommon.h"
 
+#include <QVariant>
+
 namespace QLibOA
 {
   /*! \brief The request class.
@@ -33,7 +35,7 @@ namespace QLibOA
    *
    *  1. Simply create it trough constructor or Request::fromRequest function:
    *  \code
-   *  QLibOA::ParamMap params;
+   *  QVariantMap params;
    *  params.insert("consumer_key", "foo-bar");
    *
    *  Request *req = Request::fromRequest(QLibOA::GET, "http://example.com/access_token", params);
@@ -43,7 +45,7 @@ namespace QLibOA
    *  QLibOA::Consumer con("foo-bar", "bar-foo");
    *  QLibOA::Token tok("bar-foo", "foo-bar");
    *
-   *  QLibOA::ParamMap params;
+   *  QVariantMap params;
    *  params.insert("consumer_key", "foo-bar");
    *
    *  Request *req = Request::fromConsumerAndToken(&con, &tok, QLibOA::POST, "http://example.com/access_token", params);
@@ -73,34 +75,34 @@ namespace QLibOA
   class Request
   {
     public:
-      Request(QLibOA::HttpMethod method = QLibOA::GET, QString url = QString::null, QLibOA::ParamMap params = QLibOA::ParamMap());
+      Request(QLibOA::HttpMethod method = QLibOA::GET, const QString &url = QString(), QVariantMap params = QVariantMap());
 
-      void setParam(QString key, QString value, bool duplicates = true);
+      void setParam(const QString &key, const QString &value, bool duplicates = true);
 
       /*! \brief
        *  \return
        */
-      QString getParam(QString key) { return m_params.value(key); }
+      QVariant param(const QString &key) { return m_params.value(key); }
 
       /*! \brief Returns parameter keys
        *  \return A list of sorted parameter keys
        */
-      QList<QString> getParamAll(QString key) { QList<QString> params = m_params.values(key); qSort(params); return params; }
+      QVariantList paramAll(const QString &key);
 
       /*! \brief Removes all parameters with \a key key
        */
-      void unsetParam(QString key) { m_params.remove(key); }
+      void unsetParam(const QString &key) { m_params.remove(key); }
 
       /*! \brief Returns all parameters
        *  \return A map of request's parameters
        */
-      QLibOA::ParamMap getParams() { return m_params; }
+      QVariantMap params() { return m_params; }
 
-      QString getSignableParams();
+      QString signableParams();
 
-      QString getBaseString();
-      QString getNormalizedHTTPMethod();
-      QString getNormalizedUrl();
+      QString baseString();
+      QString normalizedHTTPMethod();
+      QString normalizedUrl();
 
       static QString genTimestamp();
       static QString genNonce();
@@ -108,17 +110,17 @@ namespace QLibOA
       QString toUrl();
       QString toGetdata();
       QString toPostdata();
-      QString toHeader(QString realm = QString::null);
+      QString toHeader(const QString &realm = QString());
 
       void sign(QLibOA::SignatureMethod method = QLibOA::HMAC_SHA1, Consumer *consumer = NULL, Token *token = NULL);
 
-      static Request *fromRequest(QLibOA::HttpMethod method = QLibOA::GET, QString url = NULL, QLibOA::ParamMap params = QLibOA::ParamMap());
-      static Request *fromConsumerAndToken(Consumer *consumer, Token *token = NULL, QLibOA::HttpMethod method = QLibOA::GET, QString url = QString::null, QLibOA::ParamMap params = QLibOA::ParamMap());
+      static Request *fromRequest(QLibOA::HttpMethod method = QLibOA::GET, const QString &url = QString(), const QVariantMap &params = QVariantMap());
+      static Request *fromConsumerAndToken(Consumer *consumer, Token *token = NULL, QLibOA::HttpMethod method = QLibOA::GET, const QString &url = QString(), QVariantMap params = QVariantMap());
 
       void debug();
 
     private:
-      QLibOA::ParamMap m_params; /*!< Request's parameters */
+      QVariantMap m_params; /*!< Request's parameters */
       QLibOA::HttpMethod m_method; /*!< Request HTTP method */
       QString m_url;  /*!< Request URL */
   };

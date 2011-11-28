@@ -25,7 +25,7 @@ using namespace QLibOA;
  * \param secret Consumer_secret value
  * \param callback The callback
  */
-Consumer::Consumer(QString key, QString secret, QString callback)
+Consumer::Consumer(const QString &key, const QString &secret, const QString &callback)
 {
   m_key = key;
   m_secret = secret;

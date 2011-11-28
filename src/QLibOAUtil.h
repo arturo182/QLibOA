@@ -35,12 +35,12 @@ namespace QLibOA
        */
       Util() { }
 
-      static QString encode(QString text);
-      static QString decode(QString text);
+      static QString encode(const QString &text);
+      static QString decode(const QString &text);
       static QString genKey(Consumer *consumer = 0, Token *token = 0);
-      static QLibOA::ParamMap urlToParams(QString url);
-      static QLibOA::ParamMap mergeParams(QLibOA::ParamMap first, QLibOA::ParamMap second);
-      static QString buildHTTPQuery(QLibOA::ParamMap params, bool skipOAuth = false);
+      static QVariantMap urlToParams(const QString &url);
+      static QVariantMap mergeParams(const QVariantMap &first, const QVariantMap &second);
+      static QString buildHTTPQuery(const QVariantMap &params, bool skipOAuth = false);
   };
 }
 

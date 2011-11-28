@@ -33,9 +33,9 @@ using namespace QLibOA;
  *  \param url URL of the request
  *  \param params Parameters of the request
  */
-Request::Request(QLibOA::HttpMethod method, QString url, QLibOA::ParamMap params)
+Request::Request(QLibOA::HttpMethod method, const QString &url, QVariantMap params)
 {
-  if(!url.isNull()) {
+  if(!url.isEmpty()) {
     params = Util::mergeParams(params, Util::urlToParams(url));
   }
 
@@ -49,13 +49,18 @@ Request::Request(QLibOA::HttpMethod method, QString url, QLibOA::ParamMap params
  *  \param value Value of the parameter
  *  \param duplicates Should duplicates be allowed
  */
-void Request::setParam(QString key, QString value, bool duplicates)
+void Request::setParam(const QString &key, const QString &value, bool duplicates)
 {
   if(!duplicates) {
     m_params.remove(key);
   }
 
   m_params.insert(key, value);
+}
+
+QVariantList Request::paramAll(const QString &key)
+{
+  return m_params.values(key);
 }
 
 /*! \brief A static method to create a request.
@@ -65,7 +70,7 @@ void Request::setParam(QString key, QString value, bool duplicates)
  *  \return A new Request object with supplied arguments.
  *  \sa Request::Request
  */
-Request *Request::fromRequest(QLibOA::HttpMethod method, QString url, QLibOA::ParamMap params)
+Request *Request::fromRequest(QLibOA::HttpMethod method, const QString &url, const QVariantMap &params)
 {
   return new Request(method, url, params);
 }
@@ -81,17 +86,17 @@ Request *Request::fromRequest(QLibOA::HttpMethod method, QString url, QLibOA::Pa
  *  \return A new Request object filled with default oauth parameters and consumer and token information
  *  \sa Request::Request, Request::fromRequest
  */
-Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, QLibOA::HttpMethod method, QString url, QLibOA::ParamMap params)
+Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, QLibOA::HttpMethod method, const QString &url, QVariantMap params)
 {
-  QLibOA::ParamMap defaults;
+  QVariantMap defaults;
 
   defaults.insert("oauth_nonce", Request::genNonce());
   defaults.insert("oauth_timestamp", Request::genTimestamp());
-  defaults.insert("oauth_consumer_key", consumer->getKey());
+  defaults.insert("oauth_consumer_key", consumer->key());
   defaults.insert("oauth_version", "1.0");
 
   if(token) {
-    defaults.insert("oauth_token", token->getKey());
+    defaults.insert("oauth_token", token->key());
   }
 
   params = Util::mergeParams(defaults, params);
@@ -103,9 +108,9 @@ Request *Request::fromConsumerAndToken(Consumer *consumer, Token *token, QLibOA:
  *  The string is formated like this: par1=var1&par2=var2
  *  \return A string of sorted and encoded paramters.
  */
-QString Request::getSignableParams()
+QString Request::signableParams()
 {
-  QLibOA::ParamMap params = m_params;
+  QVariantMap params = m_params;
 
   params.remove("oauth_signature");
 
@@ -115,11 +120,11 @@ QString Request::getSignableParams()
 /*! \brief Returns base string for creating the signature
  *  \return The request's <a href="http://oauth.net/core/1.0/#anchor14">base string</a>
  */
-QString Request::getBaseString()
+QString Request::baseString()
 {
-  QString method = getNormalizedHTTPMethod();
-  QString url = getNormalizedUrl();
-  QString params = getSignableParams();
+  QString method = normalizedHTTPMethod();
+  QString url = normalizedUrl();
+  QString params = signableParams();
 
   method = Util::encode(method);
   url = Util::encode(url);
@@ -131,7 +136,7 @@ QString Request::getBaseString()
 /*! \brief Returns request's HTTP method as string
  *  \return String representation of HTTP method
  */
-QString Request::getNormalizedHTTPMethod()
+QString Request::normalizedHTTPMethod()
 {
   switch(m_method) {
     case QLibOA::GET:
@@ -149,7 +154,7 @@ QString Request::getNormalizedHTTPMethod()
 /*! \brief Returns normalized request URL
  *  \return Request URL that's been stripped of query and trailing slash
  */
-QString Request::getNormalizedUrl()
+QString Request::normalizedUrl()
 {
   QUrl url(m_url);
 
@@ -182,7 +187,7 @@ QString Request::genNonce()
  */
 QString Request::toUrl()
 {
-  QString out = getNormalizedUrl();
+  QString out = normalizedUrl();
   QString getData = toGetdata();
 
   if(!getData.isEmpty()) {
@@ -209,7 +214,18 @@ QString Request::toGetdata()
  */
 QString Request::toPostdata()
 {
-  return Util::buildHTTPQuery(m_params);
+  QVariantMap params;
+
+  QMapIterator<QString, QVariant> it(m_params);
+  while(it.hasNext()) {
+      it.next();
+
+      if(!it.key().startsWith("oauth_")) {
+        params.insert(it.key(), it.value());
+      }
+  }
+
+  return Util::buildHTTPQuery(params);
 }
 
 /*! \brief Returns "Authorization" header value for header-based authorization
@@ -217,19 +233,19 @@ QString Request::toPostdata()
  *  To know more about header-based authorization, go <a href="http://oauth.net/core/1.0/#auth_header">here</a>.
  *  \return Header value
  */
-QString Request::toHeader(QString realm)
+QString Request::toHeader(const QString &realm)
 {
 	bool first = true;
 	QString out;
 
-	if(!realm.isNull()) {
+	if(!realm.isEmpty()) {
 		out = "OAuth realm=\"" + Util::encode(realm) + "\"";
 		first = false;
 	} else {
 		out = "OAuth";
 	}
 
-  QLibOA::ParamMap::iterator i = m_params.begin();
+  QVariantMap::iterator i = m_params.begin();
   while(i != m_params.end()) {
     if(i.key().mid(0, 5) != "oauth") {
       i++;
@@ -241,7 +257,7 @@ QString Request::toHeader(QString realm)
     }
 
     out.append((first)?" ":", ");
-    out.append(Util::encode(i.key()) + "=\"" + Util::encode(i.value()) + "\"");
+    out.append(Util::encode(i.key()) + "=\"" + Util::encode(i.value().toString()) + "\"");
 
     first = false;
 
@@ -273,9 +289,11 @@ void Request::sign(QLibOA::SignatureMethod method, Consumer *consumer, Token *to
   }
 
   if(sig) {
-    setParam("oauth_signature_method", sig->getName(), false);
+    setParam("oauth_signature_method", sig->name(), false);
     setParam("oauth_signature", sig->build(this, consumer, token), false);
   }
+
+  delete sig;
 }
 
 /*! \brief Prints (some) values of this class to qDebug

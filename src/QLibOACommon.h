@@ -48,10 +48,6 @@
  */
 namespace QLibOA
 {
-  /*! \brief Just a multimap of QStrings for request parameters.
-   */
-  typedef QMultiMap<QString, QString> ParamMap;
-
   /*! \brief A enum of HTTP methods for requests.
    */
   enum HttpMethod
@@ -91,27 +87,6 @@ namespace QLibOA
 
     return debug.space();
   }
-
-  /*! \brief An overloaded operator function to allow qDebug print ParamMap properly.
-  */
-  inline QDebug operator<<(QDebug debug, const QLibOA::ParamMap params)
-  {
-    debug.nospace() << "QLibOA::ParamMap(\n";
-
-    QLibOA::ParamMap::const_iterator i = params.begin();
-    while(i != params.end()) {
-      debug << "    " << i.key() << " = " << i.value();
-      i++;
-
-      if(i != params.end()) {
-        debug << "\n";
-      }
-    }
-    debug << "\n  )";
-
-    return debug.space();
-  }
-
 }
 
 #endif // QLIBOA_H

@@ -29,29 +29,29 @@ namespace QLibOA
   class Token
   {
     public:
-      Token(QString key, QString secret);
+      Token(const QString &key, const QString &secret);
 
-      static Token *fromString(QString text);
+      static Token *fromString(const QString &text);
 
       /*! \brief Sets new token_key value
        *  \param key Token_key to set
        */
-      void setKey(QString key) { m_key = key; }
+      void setKey(const QString &key) { m_key = key; }
 
       /*! \brief Returns token_key
        *  \return Token_key
        */
-      QString getKey() { return m_key; }
+      QString key() const { return m_key; }
 
       /*! \brief Sets new token_secret value
        *  \param secret Token_secret
        */
-      void setSecret(QString secret) { m_secret = secret; }
+      void setSecret(const QString &secret) { m_secret = secret; }
 
       /*! \brief Returns token_secret
        *  \return Token_secret
        */
-      QString getSecret() { return m_secret; }
+      QString secret() const { return m_secret; }
 
       /*! \brief Prints values of this class to qDebug
        */

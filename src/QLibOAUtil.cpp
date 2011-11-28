@@ -29,7 +29,7 @@ using namespace QLibOA;
  *  \param text A string to encode
  *  \return Encoded string
  */
-QString Util::encode(QString text)
+QString Util::encode(const QString &text)
 {
   return QUrl::toPercentEncoding(text);
 }
@@ -38,7 +38,7 @@ QString Util::encode(QString text)
  *  \param text A string to decode
  *  \return Decoded string
  */
-QString Util::decode(QString text)
+QString Util::decode(const QString &text)
 {
   return QUrl::fromPercentEncoding(text.toUtf8());
 }
@@ -55,13 +55,13 @@ QString Util::genKey(Consumer *consumer, Token *token)
   QByteArray key;
 
   if(consumer) {
-    key.append(Util::encode(consumer->getSecret()));
+    key.append(Util::encode(consumer->secret()));
   }
 
   key.append("&");
 
   if(token) {
-    key.append(Util::encode(token->getSecret()));
+    key.append(Util::encode(token->secret()));
   }
 
   return key;
@@ -71,9 +71,9 @@ QString Util::genKey(Consumer *consumer, Token *token)
  *  \param url URL to convert
  *  \return Map of converted parameters
  */
-QLibOA::ParamMap Util::urlToParams(QString url)
+QVariantMap Util::urlToParams(const QString &url)
 {
-  QLibOA::ParamMap params;
+  QVariantMap params;
 
   QUrl qurl(url);
   QList<QPair<QString, QString> > query = qurl.queryItems();
@@ -95,15 +95,18 @@ QLibOA::ParamMap Util::urlToParams(QString url)
  *  \param second Second parameter map
  *  \return A map of merged parameter maps
  */
-QLibOA::ParamMap Util::mergeParams(QLibOA::ParamMap first, QLibOA::ParamMap second)
+QVariantMap Util::mergeParams(const QVariantMap &first, const QVariantMap &second)
 {
-  QLibOA::ParamMap::iterator i = second.begin();
-  while(i != second.end()) {
-    first.replace(i.key(), i.value());
-    i++;
+  QVariantMap merged = first;
+
+  QMapIterator<QString, QVariant> it(second);
+  while(it.hasNext()) {
+    it.next();
+
+    merged.insert(it.key(), it.value());
   }
 
-  return first;
+  return merged;
 }
 
 /*! \brief Returns parameters \a params as a string
@@ -113,34 +116,23 @@ QLibOA::ParamMap Util::mergeParams(QLibOA::ParamMap first, QLibOA::ParamMap seco
  *  \param skipOAuth Should parameters starting with oauth_ be omitted
  *  \return A string of sorted and encoded parameters
  */
-QString Util::buildHTTPQuery(QLibOA::ParamMap params, bool skipOAuth)
+QString Util::buildHTTPQuery(const QVariantMap &params, bool skipOAuth)
 {
   if(params.size() == 0) {
     return NULL;
   }
 
-  QLibOA::ParamMap::iterator i = params.begin();
-  while(i != params.end()) {
-    QString key = Util::encode(i.key());
-    QString value = Util::encode(i.value());
-
-    params.remove(i.key());
-    params.insert(key, value);
-
-    i++;
-  }
-
   QString out;
-  i = params.begin();
-  while(i != params.end()) {
-    if(!(skipOAuth && i.key().contains("oauth_"))) {
-      out.append(i.key());
-      out.append("=");
-      out.append(i.value());
-      out.append("&");
-    }
+  QMapIterator<QString, QVariant> it(params);
+  while(it.hasNext()) {
+    it.next();
 
-    i++;
+    QString key = Util::encode(it.key());
+    QString value = Util::encode(it.value().toString());
+
+    if(!(skipOAuth && key.contains("oauth_"))) {
+        out += QString("%1=%2&").arg(key).arg(value);
+    }
   }
 
   if(out.endsWith("&")) {

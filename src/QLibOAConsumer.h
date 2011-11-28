@@ -29,37 +29,37 @@ namespace QLibOA
   class Consumer
   {
     public:
-      Consumer(QString key, QString secret, QString callback = QString::null);
+      Consumer(const QString &key, const QString &secret, const QString &callback = QString());
 
       /*! \brief Sets new consumer_key value
        *  \param key Consumer_key to set
        */
-      void setKey(QString key) { m_key = key; }
+      void setKey(const QString &key) { m_key = key; }
 
       /*! \brief Returns consumer_key
        *  \return Consumer_key
        */
-      QString getKey() { return m_key; }
+      QString key() { return m_key; }
 
       /*! \brief Sets new consumer_secret value
        *  \param secret Consumer_secret
        */
-      void setSecret(QString secret) { m_secret = secret; }
+      void setSecret(const QString &secret) { m_secret = secret; }
 
       /*! \brief Returns consumer_secret
        *  \return Consumer_secret
        */
-      QString getSecret() { return m_secret; }
+      QString secret() { return m_secret; }
 
       /*! \brief Sets new callback value
        *  \param callback Callback
        */
-      void setCallback(QString callback) { m_callback = callback; }
+      void setCallback(const QString &callback) { m_callback = callback; }
 
       /*! \brief Returns callback
        *  \return Callback
        */
-      QString getCallback() { return m_callback; }
+      QString callback() { return m_callback; }
 
       /*! \brief Prints values of this class to qDebug
        */

@@ -39,7 +39,7 @@ namespace QLibOA
 
       /*! \brief Returns the name of signing algorithm
        */
-      virtual QString getName() = 0;
+      virtual QString name() const = 0;
 
       /*! \brief Generates signature based on \a request, \a consumer and \a token
        *  \return The signature

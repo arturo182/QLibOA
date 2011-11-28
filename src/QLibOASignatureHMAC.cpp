@@ -49,7 +49,7 @@ QString SignatureHMAC::hmacSha1(QByteArray data, QByteArray key)
 
 QString SignatureHMAC::build(Request *request, Consumer *consumer, Token *token)
 {
-  QString base = request->getBaseString();
+  QString base = request->baseString();
   QString key = Util::genKey(consumer, token);
 
   return hmacSha1(base.toUtf8(), key.toUtf8());

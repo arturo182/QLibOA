@@ -26,7 +26,7 @@ using namespace QLibOA;
  * \param key Token_key value
  * \param secret Token_secret value
  */
-Token::Token(QString key, QString secret)
+Token::Token(const QString &key, const QString &secret)
 {
   m_key = key;
   m_secret = secret;
@@ -38,7 +38,7 @@ Token::Token(QString key, QString secret)
  *  \param text A string containing oauth_token and oauth_token_secret values
  *  \return Pointer to Token object with info from \a text
  */
-Token *Token::fromString(QString text)
+Token *Token::fromString(const QString &text)
 {
   QUrl url("http://example.com/?"+text);
 

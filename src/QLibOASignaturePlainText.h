@@ -30,7 +30,7 @@ namespace QLibOA
     public:
       SignaturePlainText() { }
 
-      QString getName() { return "PLAINTEXT"; }
+      QString name() const { return "PLAINTEXT"; }
       QString build(Request *request, Consumer *consumer, Token *token = NULL) { Q_UNUSED(request); return Util::genKey(consumer, token); }
   };
 }

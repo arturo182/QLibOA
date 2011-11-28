@@ -29,7 +29,7 @@ namespace QLibOA
     public:
       SignatureHMAC() { }
 
-      QString getName() { return "HMAC-SHA1"; }
+      QString name() const { return "HMAC-SHA1"; }
       QString hmacSha1(QByteArray data, QByteArray key);
       QString build(Request *request, Consumer *consumer, Token *token = NULL);
   };
